@@ -2,7 +2,7 @@
 
 > Content-addressable URL caching for CI and package managers. Clients request blobs by algo/hash with source URLs; servers fetch and cache; clients always verify hashes because servers are untrusted.
 
-Website: https://fetchurl.github.io
+Website: https://fetchurl.github.io/website/
 Organization: https://github.com/fetchurl
 
 ## Normative specification
@@ -22,11 +22,11 @@ Organization: https://github.com/fetchurl
 
 ## Site documentation (human + agent oriented)
 
-- Getting started: https://fetchurl.github.io/docs/getting-started/
-- Protocol overview: https://fetchurl.github.io/docs/protocol/
-- Server: https://fetchurl.github.io/docs/server/
-- SDKs: https://fetchurl.github.io/docs/sdks/
-- Docs index: https://fetchurl.github.io/docs/
+- Getting started: https://fetchurl.github.io/website/docs/getting-started/
+- Protocol overview: https://fetchurl.github.io/website/docs/protocol/
+- Server: https://fetchurl.github.io/website/docs/server/
+- SDKs: https://fetchurl.github.io/website/docs/sdks/
+- Docs index: https://fetchurl.github.io/website/docs/
 
 ## Key concepts for agents
 
