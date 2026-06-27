@@ -1,0 +1,46 @@
+# fetchurl
+
+> Content-addressable URL caching for CI and package managers. Clients request blobs by algo/hash with source URLs; servers fetch and cache; clients always verify hashes because servers are untrusted.
+
+Website: https://fetchurl.github.io
+Organization: https://github.com/fetchurl
+
+## Normative specification
+
+- Protocol source of truth: https://github.com/fetchurl/spec
+- SPEC.md (raw): https://raw.githubusercontent.com/fetchurl/spec/main/SPEC.md
+- Changelog: https://github.com/fetchurl/spec/blob/main/CHANGELOG.md
+
+## Implementations
+
+- Reference server & CLI (Go): https://github.com/fetchurl/fetchurl
+- Container image: ghcr.io/fetchurl/fetchurl
+- JavaScript SDK: https://github.com/fetchurl/sdk-js
+- Python SDK: https://github.com/fetchurl/sdk-python
+- Rust SDK: https://github.com/fetchurl/sdk-rust
+- Java SDK: https://github.com/fetchurl/sdk-java
+
+## Site documentation (human + agent oriented)
+
+- Getting started: https://fetchurl.github.io/docs/getting-started/
+- Protocol overview: https://fetchurl.github.io/docs/protocol/
+- Server: https://fetchurl.github.io/docs/server/
+- SDKs: https://fetchurl.github.io/docs/sdks/
+- Docs index: https://fetchurl.github.io/docs/
+
+## Key concepts for agents
+
+- Env var FETCHURL_SERVER: full base URL(s) ready to append /:algo/:hash. RFC 8941 list if value starts with `"`. Empty/absent disables server support.
+- Request: GET {FETCHURL_SERVER}/{algo}/{hash} with header X-Source-Urls as RFC 8941 list of origin URLs.
+- Hashes: lowercase hex. Prefer sha256. Algorithms named lowercase [a-z0-9] only (sha1, sha256, sha512 in scope).
+- Trust: clients MUST verify content hash; servers MAY abort mid-stream on mismatch; non-graceful end = reject.
+- Sources MUST provide Content-Length or server rejects.
+- Health: GET {server base}/health — HTTP 200 means OK.
+- On real cache hit servers SHOULD send Cache-Control: public, max-age=31536000, immutable and Content-Type: application/octet-stream.
+- No authentication in the protocol; public (or well-hidden) data only.
+- Protocol versioning is independent of server/SDK semver; breaking wire changes require new protocol tags in fetchurl/spec.
+
+## Optional
+
+- This website repository: https://github.com/fetchurl/website
+- Org profile README: https://github.com/fetchurl/.github/blob/main/profile/README.md

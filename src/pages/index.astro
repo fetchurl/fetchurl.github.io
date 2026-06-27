@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDocNav } from '../lib/docs';
+
+const base = import.meta.env.BASE_URL;
+const docs = getDocNav();
+
+const repos = [
+  {
+    name: 'spec',
+    role: 'Protocol',
+    blurb: 'Normative SPEC.md — versioned independently of implementations.',
+    href: 'https://github.com/fetchurl/spec',
+  },
+  {
+    name: 'fetchurl',
+    role: 'Server',
+    blurb: 'Reference Go server & CLI. Image: ghcr.io/fetchurl/fetchurl',
+    href: 'https://github.com/fetchurl/fetchurl',
+  },
+  {
+    name: 'sdk-js',
+    role: 'JavaScript',
+    blurb: 'Web Crypto client for Node, Deno, Bun, and browsers.',
+    href: 'https://github.com/fetchurl/sdk-js',
+  },
+  {
+    name: 'sdk-python',
+    role: 'Python',
+    blurb: 'Stdlib-friendly client with injectable HTTP fetcher.',
+    href: 'https://github.com/fetchurl/sdk-python',
+  },
+  {
+    name: 'sdk-rust',
+    role: 'Rust',
+    blurb: 'Protocol state machine; bring your own HTTP stack.',
+    href: 'https://github.com/fetchurl/sdk-rust',
+  },
+  {
+    name: 'sdk-java',
+    role: 'Java',
+    blurb: 'JVM client SDK for fetchurl cache servers.',
+    href: 'https://github.com/fetchurl/sdk-java',
+  },
+];
+---
+
+<BaseLayout
+  title="fetchurl"
+  description="Content-addressable URL caching for CI and package managers. Clients verify hashes; servers are untrusted."
+>
+  <section class="border-b border-base-300 bg-base-100">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:py-20">
+      <p class="mb-3 text-sm font-medium text-primary">fetchurl protocol</p>
+      <h1 class="max-w-3xl text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
+        Content-addressable URL caching for CI and package managers
+      </h1>
+      <p class="mt-5 max-w-2xl text-lg text-base-content/80 text-pretty">
+        Clients ask a cache server for <code class="rounded-field bg-base-200 px-1.5 py-0.5 text-sm">algo/hash</code> and pass source URLs.
+        The server fetches, stores, and serves — but remains <strong class="font-semibold text-base-content">untrusted</strong>.
+        Clients always verify hashes. No MITM proxies. No fragile workflow-cache keys tied to lockfile hashes alone.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a class="btn btn-primary rounded-field shadow-none" href={`${base}docs/getting-started/`}>Get started</a>
+        <a class="btn btn-outline border-base-300 rounded-field shadow-none" href={`${base}docs/protocol/`}>Read the protocol</a>
+        <a
+          class="btn btn-ghost rounded-field"
+          href="https://github.com/fetchurl/spec"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub org
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-b border-base-300 bg-base-200/50">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <h2 class="text-2xl font-semibold tracking-tight">How it fits together</h2>
+      <div class="mt-8 grid gap-4 md:grid-cols-3">
+        <div class="rounded-box border border-base-300 bg-base-100 p-5">
+          <h3 class="font-semibold">Client</h3>
+          <p class="mt-2 text-sm text-base-content/80 text-pretty">
+            Package manager or tool that knows the hash and source URLs. Sets <code class="text-xs">FETCHURL_SERVER</code>, requests by content address, verifies the stream.
+          </p>
+        </div>
+        <div class="rounded-box border border-base-300 bg-base-100 p-5">
+          <h3 class="font-semibold">Server</h3>
+          <p class="mt-2 text-sm text-base-content/80 text-pretty">
+            Intermediate cache: stores confirmed blobs until eviction. Serves <code class="text-xs">GET /:algo/:hash</code> with <code class="text-xs">X-Source-Urls</code>.
+          </p>
+        </div>
+        <div class="rounded-box border border-base-300 bg-base-100 p-5">
+          <h3 class="font-semibold">Source</h3>
+          <p class="mt-2 text-sm text-base-content/80 text-pretty">
+            Origin that would serve the file directly. Must provide content length; mirrors can be listed and chosen randomly.
+          </p>
+        </div>
+      </div>
+      <pre class="astro-code mt-8 overflow-x-auto rounded-box border border-base-300 bg-base-100 p-4 text-sm leading-relaxed" style="background-color:var(--color-base-100)"><code>GET /api/fetchurl/sha256/e3b0… HTTP/1.1
+X-Source-Urls: "https://cdn.example/file.tgz", "https://backup.example/file.tgz"</code></pre>
+    </div>
+  </section>
+
+  <section class="border-b border-base-300">
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <h2 class="text-2xl font-semibold tracking-tight">Repositories</h2>
+        <a class="link link-primary text-sm" href="https://github.com/fetchurl" target="_blank" rel="noopener noreferrer">
+          github.com/fetchurl
+        </a>
+      </div>
+      <ul class="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          repos.map((r) => (
+            <li>
+              <a
+                href={r.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex h-full flex-col rounded-box border border-base-300 bg-base-100 p-5 transition-colors hover:border-primary/40 hover:bg-base-200/40"
+              >
+                <span class="text-xs font-medium uppercase tracking-wide text-primary">{r.role}</span>
+                <span class="mt-1 font-semibold">{r.name}</span>
+                <span class="mt-2 text-sm text-base-content/75 text-pretty">{r.blurb}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="mx-auto max-w-6xl px-4 py-14">
+      <h2 class="text-2xl font-semibold tracking-tight">Documentation</h2>
+      <p class="mt-2 max-w-prose text-base-content/80">
+        Site docs orient you across the org. Wire-level behavior is defined only in the normative spec repository.
+      </p>
+      <ul class="mt-8 divide-y divide-base-300 rounded-box border border-base-300 bg-base-100">
+        {
+          docs.map((d) => (
+            <li>
+              <a
+                href={`${base}docs/${d.slug}/`}
+                class="flex flex-col gap-1 px-5 py-4 transition-colors hover:bg-base-200/50 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+              >
+                <span class="font-medium">{d.title}</span>
+                <span class="text-sm text-base-content/70 sm:text-right">{d.description}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
