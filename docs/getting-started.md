@@ -19,13 +19,13 @@ go install github.com/fetchurl/fetchurl/cmd/fetchurl@latest
 fetchurl server
 ```
 
-Or use the published container image:
+Or use the published container image (image entrypoint is the `fetchurl` binary; pass the **`server`** subcommand):
 
 ```bash
-docker run --rm -p 8080:8080 ghcr.io/fetchurl/fetchurl
+docker run --rm -p 8080:8080 ghcr.io/fetchurl/fetchurl server
 ```
 
-Configure storage paths and listen addresses via CLI flags and environment variables (see the server repository).
+Default listen port is **8080**; the protocol base path is **`/api/fetchurl`**. Flags, environment variables, and cache options are listed on the [server](./server/) page.
 
 ## Point clients at the server
 
@@ -57,5 +57,5 @@ When multiple algorithms are available, clients should prefer **sha256**. Suppor
 ## Next steps
 
 - [Protocol overview](./protocol/) — request shape, headers, errors
-- [Server](./server/) — reference implementation notes
+- [Server](./server/) — flags, container image, implementation notes
 - [SDKs](./sdks/) — language clients
