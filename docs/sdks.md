@@ -32,20 +32,51 @@ const data = await fetchurl({
 ## Python
 
 ```python
-from fetchurl import fetch, UrllibFetcher, parse_fetchurl_server
-import os
+from fetchurl import fetch, UrllibFetcher
+import io
 
-servers = parse_fetchurl_server(os.environ.get("FETCHURL_SERVER", ""))
-# Drive FetchSession with your HTTP client — see package docs.
+out = io.BytesIO()
+fetch(
+    UrllibFetcher(),
+    "sha256",
+    "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ["https://cdn.example.com/file.tar.gz"],
+    out,
+)
+# out.getvalue() is hash-verified bytes
+# FETCHURL_SERVER is read from the environment (servers tried before sources)
 ```
 
 ## Rust
 
 Use `FetchSession` and the verifier APIs with any HTTP library. See `examples/get.rs` in the crate repository.
 
+## Java
+
+```java
+import io.github.fetchurl.Fetchurl;
+import io.github.fetchurl.JdkHttpClientFetcher;
+
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+try (OutputStream out = Files.newOutputStream(Path.of("file.bin"))) {
+    Fetchurl.fetch(
+        new JdkHttpClientFetcher(),
+        "sha256",
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        List.of("https://cdn.example.com/file.bin"),
+        out
+    );
+}
+// FETCHURL_SERVER is read from the environment (servers tried before sources)
+```
+
 ## Environment
 
-Every SDK honors **`FETCHURL_SERVER`** as defined in the protocol (single URL or RFC 8941 list). Empty/absent disables server use.
+Every SDK honors **`FETCHURL_SERVER`** as defined in the protocol (single URL or RFC 8941 list). Empty/absent disables server use. The high-level helpers above read it automatically; parse helpers (`parseFetchurlServer` / `parse_fetchurl_server`) are available when you drive lower-level session APIs yourself.
 
 ## Integration tests
 
