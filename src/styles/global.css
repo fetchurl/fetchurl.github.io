@@ -1,4 +1,12 @@
 @import "tailwindcss";
+
+/*
+ * Site theme is driven by html[data-theme] (ThemeChooser + FOUC script), not
+ * prefers-color-scheme alone. Point Tailwind's dark: variant at that so utilities
+ * like dark:prose-invert track the chosen theme (and avoid OS/theme mismatch).
+ */
+@custom-variant dark (&:where([data-theme=fetchurl-dark], [data-theme=fetchurl-dark] *));
+
 @plugin "daisyui" {
   themes: fetchurl --default, fetchurl-dark --prefersdark;
 }
