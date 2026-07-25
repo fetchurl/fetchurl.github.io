@@ -36,6 +36,8 @@ const themes = [
   (function () {
     const KEY = 'fetchurl-theme';
     const allowed = new Set(['fetchurl', 'fetchurl-dark']);
+    // Keep in sync with BaseLayout FOUC script (browser chrome / theme-color).
+    const themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' };
     function preferred() {
       try {
         const saved = localStorage.getItem(KEY);
@@ -45,8 +47,14 @@ const themes = [
         ? 'fetchurl-dark'
         : 'fetchurl';
     }
+    function setThemeColor(theme) {
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (!meta) return;
+      meta.setAttribute('content', themeColors[theme] || themeColors.fetchurl);
+    }
     function apply(theme) {
       document.documentElement.setAttribute('data-theme', theme);
+      setThemeColor(theme);
       document.querySelectorAll('[data-theme-option]').forEach(function (el) {
         el.checked = el.value === theme;
       });

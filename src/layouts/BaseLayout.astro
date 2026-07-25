@@ -41,12 +41,23 @@ const iconUrl = new URL(`${base}icon-512.png`.replace(/\/{2,}/g, '/').replace(':
     <title>{pageTitle}</title>
     <script is:inline>
       (function () {
+        // Match browser chrome (theme-color) to data-theme. Light uses brand
+        // accent; dark uses base-100 (~oklch(18% 0.02 255)) so the toolbar
+        // does not stay vivid blue over a dark page.
+        var themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' };
+        function setThemeColor(theme) {
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (!meta) return;
+          meta.setAttribute('content', themeColors[theme] || themeColors.fetchurl);
+        }
         try {
           var t = localStorage.getItem('fetchurl-theme');
           if (t === 'fetchurl' || t === 'fetchurl-dark') {
             document.documentElement.setAttribute('data-theme', t);
+            setThemeColor(t);
           } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.setAttribute('data-theme', 'fetchurl-dark');
+            setThemeColor('fetchurl-dark');
           }
         } catch (e) {}
       })();
