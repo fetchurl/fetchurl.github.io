@@ -17,6 +17,8 @@ const pageTitle = title === 'fetchurl' ? title : `${title} · fetchurl`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL;
 const iconUrl = new URL(`${base}icon-512.png`.replace(/\/{2,}/g, '/').replace(':/', '://'), Astro.site);
+const themeStorageKey = 'fetchurl-theme';
+const themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' } as const;
 ---
 
 <!doctype html>
@@ -26,7 +28,7 @@ const iconUrl = new URL(`${base}icon-512.png`.replace(/\/{2,}/g, '/').replace(':
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0050d0" />
+    <meta name="theme-color" content={themeColors.fetchurl} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={`${base}favicon.png`} type="image/png" sizes="32x32" />
     <link rel="icon" href={`${base}icon-192.png`} type="image/png" sizes="192x192" />
@@ -39,27 +41,48 @@ const iconUrl = new URL(`${base}icon-512.png`.replace(/\/{2,}/g, '/').replace(':
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:image" content={iconUrl.href} />
     <title>{pageTitle}</title>
-    <script is:inline>
+    <script is:inline define:vars={{ themeStorageKey, themeColors }}>
       (function () {
-        // Match browser chrome (theme-color) to data-theme. Light uses brand
-        // accent; dark uses base-100 (~oklch(18% 0.02 255)) so the toolbar
-        // does not stay vivid blue over a dark page.
-        var themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' };
+        // Single theme runtime: FOUC apply in <head>, radio sync after DOM,
+        // and ThemeChooser change handling. Light theme-color is brand accent;
+        // dark uses base-100 (~oklch(18% 0.02 255)) so the toolbar is not
+        // vivid blue over a dark page.
+        var KEY = themeStorageKey;
+        var allowed = { fetchurl: true, 'fetchurl-dark': true };
         function setThemeColor(theme) {
           var meta = document.querySelector('meta[name="theme-color"]');
           if (!meta) return;
           meta.setAttribute('content', themeColors[theme] || themeColors.fetchurl);
         }
-        try {
-          var t = localStorage.getItem('fetchurl-theme');
-          if (t === 'fetchurl' || t === 'fetchurl-dark') {
-            document.documentElement.setAttribute('data-theme', t);
-            setThemeColor(t);
-          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            document.documentElement.setAttribute('data-theme', 'fetchurl-dark');
-            setThemeColor('fetchurl-dark');
+        function preferred() {
+          try {
+            var saved = localStorage.getItem(KEY);
+            if (saved && allowed[saved]) return saved;
+          } catch (e) {}
+          return window.matchMedia('(prefers-color-scheme: dark)').matches
+            ? 'fetchurl-dark'
+            : 'fetchurl';
+        }
+        function apply(theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          setThemeColor(theme);
+          document.querySelectorAll('[data-theme-option]').forEach(function (el) {
+            el.checked = el.value === theme;
+          });
+          try {
+            localStorage.setItem(KEY, theme);
+          } catch (e) {}
+        }
+        apply(preferred());
+        document.addEventListener('DOMContentLoaded', function () {
+          apply(preferred());
+        });
+        document.addEventListener('change', function (e) {
+          var t = e.target;
+          if (t && t.classList && t.classList.contains('theme-controller') && allowed[t.value]) {
+            apply(t.value);
           }
-        } catch (e) {}
+        });
       })();
     </script>
   </head>
