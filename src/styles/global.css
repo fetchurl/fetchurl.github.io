@@ -121,7 +121,20 @@ body {
   text-wrap: pretty;
 }
 
-/* Shiki dual-theme: follow data-theme on html */
+/*
+ * Shiki dual-theme (markdown.shikiConfig.defaultColor: false): tokens only set
+ * --shiki-light* / --shiki-dark* CSS variables. Apply both themes via data-theme
+ * so light mode is not monochrome inherited text.
+ */
+html[data-theme="fetchurl"] .astro-code,
+html[data-theme="fetchurl"] .astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+  font-style: var(--shiki-light-font-style) !important;
+  font-weight: var(--shiki-light-font-weight) !important;
+  text-decoration: var(--shiki-light-text-decoration) !important;
+}
+
 html[data-theme="fetchurl-dark"] .astro-code,
 html[data-theme="fetchurl-dark"] .astro-code span {
   color: var(--shiki-dark) !important;
