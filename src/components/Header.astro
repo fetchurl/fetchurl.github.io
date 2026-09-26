@@ -1,5 +1,6 @@
 ---
 import ThemeChooser from './ThemeChooser.astro';
+import NavMenu from './NavMenu.astro';
 
 const base = import.meta.env.BASE_URL;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
@@ -27,27 +28,7 @@ const links = [
     </div>
     <div class="navbar-center hidden md:flex">
       <nav class="menu menu-horizontal gap-1 px-1" aria-label="Primary">
-        {
-          links.map((link) =>
-            link.external ? (
-              <li>
-                <a href={link.href} target="_blank" rel="noopener noreferrer" class="font-medium">
-                  {link.label}
-                </a>
-              </li>
-            ) : (
-              <li>
-                <a
-                  href={link.href}
-                  class:list={['font-medium', link.match(path) && 'bg-base-200']}
-                  aria-current={link.match(path) ? 'page' : undefined}
-                >
-                  {link.label}
-                </a>
-              </li>
-            ),
-          )
-        }
+        <NavMenu links={links} path={path} prominent />
       </nav>
     </div>
     <div class="navbar-end gap-1">
@@ -57,21 +38,7 @@ const links = [
           Menu
         </div>
         <ul tabindex="0" class="dropdown-content menu bg-base-100 border border-base-300 rounded-box z-50 mt-2 w-48 p-2 shadow-none">
-          {
-            links.map((link) => (
-              <li>
-                {link.external ? (
-                  <a href={link.href} target="_blank" rel="noopener noreferrer">
-                    {link.label}
-                  </a>
-                ) : (
-                  <a href={link.href} aria-current={link.match(path) ? 'page' : undefined}>
-                    {link.label}
-                  </a>
-                )}
-              </li>
-            ))
-          }
+          <NavMenu links={links} path={path} />
         </ul>
       </div>
     </div>
