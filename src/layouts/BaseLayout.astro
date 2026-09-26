@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { darkThemeId, defaultThemeId, themeColors, themeStorageKey } from '../lib/themes';
 
 interface Props {
   title?: string;
@@ -17,18 +18,16 @@ const pageTitle = title === 'fetchurl' ? title : `${title} · fetchurl`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const base = import.meta.env.BASE_URL;
 const iconUrl = new URL(`${base}icon-512.png`.replace(/\/{2,}/g, '/').replace(':/', '://'), Astro.site);
-const themeStorageKey = 'fetchurl-theme';
-const themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' } as const;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="fetchurl">
+<html lang="en" data-theme={defaultThemeId}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
-    <meta name="theme-color" content={themeColors.fetchurl} />
+    <meta name="theme-color" content={themeColors[defaultThemeId]} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={`${base}favicon.png`} type="image/png" sizes="32x32" />
     <link rel="icon" href={`${base}icon-192.png`} type="image/png" sizes="192x192" />
@@ -41,18 +40,21 @@ const themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' } as const
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:image" content={iconUrl.href} />
     <title>{pageTitle}</title>
-    <script is:inline define:vars={{ themeStorageKey, themeColors }}>
+    <script is:inline define:vars={{ themeStorageKey, themeColors, defaultThemeId, darkThemeId }}>
       (function () {
         // Single theme runtime: FOUC apply in <head>, radio sync after DOM,
         // and ThemeChooser change handling. Light theme-color is brand accent;
         // dark uses base-100 (~oklch(18% 0.02 255)) so the toolbar is not
         // vivid blue over a dark page.
         var KEY = themeStorageKey;
-        var allowed = { fetchurl: true, 'fetchurl-dark': true };
+        var allowed = {};
+        Object.keys(themeColors).forEach(function (id) {
+          allowed[id] = true;
+        });
         function setThemeColor(theme) {
           var meta = document.querySelector('meta[name="theme-color"]');
           if (!meta) return;
-          meta.setAttribute('content', themeColors[theme] || themeColors.fetchurl);
+          meta.setAttribute('content', themeColors[theme] || themeColors[defaultThemeId]);
         }
         function preferred() {
           try {
@@ -60,8 +62,8 @@ const themeColors = { fetchurl: '#0050d0', 'fetchurl-dark': '#121826' } as const
             if (saved && allowed[saved]) return saved;
           } catch (e) {}
           return window.matchMedia('(prefers-color-scheme: dark)').matches
-            ? 'fetchurl-dark'
-            : 'fetchurl';
+            ? darkThemeId
+            : defaultThemeId;
         }
         function apply(theme) {
           document.documentElement.setAttribute('data-theme', theme);
