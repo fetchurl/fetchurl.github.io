@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import ExternalLink from '../components/ExternalLink.astro';
 import { getDocNav } from '../lib/docs';
 
 interface Heading {
@@ -66,8 +67,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         )
       }
       <p class="mt-4 text-xs text-base-content/60">
-        Normative protocol lives in
-        <a class="link" href="https://github.com/fetchurl/spec" target="_blank" rel="noopener noreferrer">fetchurl/spec</a>.
+        Normative protocol lives in{' '}
+        <ExternalLink class="link" href="https://github.com/fetchurl/spec">fetchurl/spec</ExternalLink>.
       </p>
     </aside>
     <article class="min-w-0">
