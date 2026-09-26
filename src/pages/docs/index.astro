@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExternalLink from '../../components/ExternalLink.astro';
 import { getDocNav } from '../../lib/docs';
 
 const base = import.meta.env.BASE_URL;
@@ -10,8 +11,8 @@ const docs = getDocNav();
   <div class="mx-auto max-w-3xl px-4 py-12">
     <h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">Documentation</h1>
     <p class="mt-3 text-base-content/80 text-pretty">
-      Guides for the protocol, reference server, SDKs, and environment setup. Normative text is in
-      <a class="link link-primary" href="https://github.com/fetchurl/spec" target="_blank" rel="noopener noreferrer">fetchurl/spec</a>.
+      Guides for the protocol, reference server, SDKs, and environment setup. Normative text is in{' '}
+      <ExternalLink class="link link-primary" href="https://github.com/fetchurl/spec">fetchurl/spec</ExternalLink>.
     </p>
     <ul class="mt-10 space-y-3">
       {

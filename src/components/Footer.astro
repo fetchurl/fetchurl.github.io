@@ -1,4 +1,6 @@
 ---
+import ExternalLink from './ExternalLink.astro';
+
 const base = import.meta.env.BASE_URL;
 const year = new Date().getFullYear();
 ---
@@ -11,15 +13,15 @@ const year = new Date().getFullYear();
     </p>
     <nav class="flex flex-wrap gap-4" aria-label="Footer">
       <a class="link link-hover" href={`${base}docs/`}>Docs</a>
-      <a class="link link-hover" href="https://github.com/fetchurl/spec" target="_blank" rel="noopener noreferrer">Spec</a>
+      <ExternalLink class="link link-hover" href="https://github.com/fetchurl/spec">Spec</ExternalLink>
       <a class="link link-hover" href={`${base}llms.txt`}>llms.txt</a>
-      <a class="link link-hover" href="https://github.com/fetchurl" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <ExternalLink class="link link-hover" href="https://github.com/fetchurl">GitHub</ExternalLink>
     </nav>
   </div>
   <div class="border-t border-base-300">
     <p class="mx-auto max-w-6xl px-4 py-3 text-xs text-base-content/60">
-      © {year} fetchurl · MIT · Site source on
-      <a class="link link-hover" href="https://github.com/fetchurl/fetchurl.github.io" target="_blank" rel="noopener noreferrer">fetchurl/fetchurl.github.io</a>
+      © {year} fetchurl · MIT · Site source on{' '}
+      <ExternalLink class="link link-hover" href="https://github.com/fetchurl/fetchurl.github.io">fetchurl/fetchurl.github.io</ExternalLink>
     </p>
   </div>
 </footer>
